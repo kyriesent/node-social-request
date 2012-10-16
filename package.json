@@ -1,0 +1,13 @@
+{
+    "name": "social-request"
+  , "version": "0.0.1"
+  , "private": true
+  , "dependencies": {
+      "request": "2.11.x"
+    , "mocha": "1.6.x"
+    , "sinon": "1.4.x"
+    , "expect.js": "0.1.x"
+    , "async": "0.1.x"
+    , "gdata": "0.1.x"
+  }
+}
