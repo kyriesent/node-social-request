@@ -1,27 +1,35 @@
-Gdata = require('gdata').GDClient
+async = require('async')
+OAuth = require('oauth').OAuth
 
-google = (keys) ->
+googleClient = (keys) ->
 	self = @
 	@consumerKey = keys.consumerKey
 	@consumerSecret = keys.consumerSecret
+	oauth = new OAuth null, null, @consumerKey, @consumerSecret, '2.0', null, 'HMAC-SHA1'
+	oauth._headers['GData-Version'] = '3.0'
 	@requestFunctions =
 		contacts: (tokens, cb) ->
-			google = new Gdata(self.consumerKey, self.consumerSecret)
-			google.setAccessToken(tokens.access_token, tokens.access_token_secret)
-			google.get 'https://www.google.com/m8/feeds/contacts/default/full/', (err, feed) ->
-				return cb err if err
-				contacts = []
-				for entry in feed.getEntries()
+			oauth.get 'https://www.google.com/m8/feeds/contacts/default/full?alt=json', tokens.access_token, tokens.access_token_secret, (err, data, res) ->
+				return cb new Error(err.data ? err) if err
+				getPrimaryEmail = (contact, cb) ->
+					emails = contact.entry['gd$email']
+					return cb(null, contact) if not emails?
+					async.detect emails, (email, cb) ->
+						cb(email.primary)
+					, (primaryEmail) ->
+						contact.email = primaryEmail.address
+						cb(null, contact)
+				data = JSON.parse(data)
+				async.map data.feed.entry, (entry, cb) ->
 					contact = 
 						entry: entry
-						fullname: entry.entry['gd$name']['gd$fullName']?
-						email: entry.entry['gd$name']?['gd$email']?
-					contacts.push contact
-					console.log contact.fullname	
-					console.log contact.email
-				cb(null, 'google contacts')
+						fullname: if entry['gd$name'] then entry['gd$name']['gd$fullName']['$t'] else null
+					getPrimaryEmail(contact, cb);
+				, cb
 		details: (tokens, cb) ->
-			cb(null, 'google details')
+			oauth.get 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json', tokens.access_token, tokens.access_token_secret, (err, data, res) ->
+				return cb new Error(err.data ? err) if err
+				cb(null, JSON.parse(data))
 	return
 
-module.exports = google
+module.exports = googleClient
