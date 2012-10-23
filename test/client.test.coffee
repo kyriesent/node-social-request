@@ -1,4 +1,5 @@
 SocialReq = require '../index.js'
+testConfig = require '../testconfig.coffee'
 expect = require 'expect.js'
 
 describe 'Client', () ->
@@ -6,10 +7,10 @@ describe 'Client', () ->
   beforeEach (done) ->
     socialReq = new SocialReq()
     socialReq
-      .use('google', {consumerKey: 'david.dev.truapp.me', consumerSecret: '3Od4rkt7vnT0oj_5Ix3_vIKs'})
-      .use('facebook', {appId: '507989612559123', appSecret: '527af33cb71436a9856f7cde32ac0c77'})
-      .use('twitter', {consumerKey: 'zrlEiRk1ieXffSFLE66FA', consumerSecret: '9XPjybMWIR2GiSSuqZu90HbOArYaYgeqZ7ZoCjaJic'})
-      .use('linkedin', {apiKey: 'jrd5vifr3gst', secretKey: 'z745BfMl1jIA2Fn7'})
+      .use('google', {consumerKey: testConfig.google.consumerKey, consumerSecret: testConfig.google.consumerSecret})
+      .use('facebook', {appId: testConfig.facebook.appId, appSecret: testConfig.facebook.appSecret})
+      .use('twitter', {consumerKey: testConfig.twitter.consumerKey, consumerSecret: testConfig.twitter.consumerSecret})
+      .use('linkedin', {apiKey: testConfig.linkedin.apiKey, secretKey: testConfig.linkedin.secretKey})
     done()
 
   describe '#get', () ->
@@ -17,16 +18,16 @@ describe 'Client', () ->
       socialReq.getTokens (id, cb) ->
         cb
           facebook:
-            access_token: 'AAAHOA4xnZBxMBAK4ZCI2PjnhqlMLhMd0aZA9lHpgPMwFN7rw6lOV5HBditZB5Hch2rFIdsNrQOR08qcR2ZAeZA5uAVzK2NNgQZD'
+            access_token: testConfig.facebook.access_token
           google: 
-            access_token: '1/5otDvTdamXCWJpf7L1-pzhQWKJ7Wir2idvLkPi3LLII'
-            access_token_secret: 'V0b42SIiir9GKCwryxTBhi5d'
+            access_token: testConfig.google.access_token
+            access_token_secret: testConfig.google.access_token_secret
           twitter:
-            access_token: '18435384-koEj8OG4nzOQTG3EeoCkVCNMnH7jv4in0v3KXzps5'
-            access_token_secret: 'eKSKtQlujYadeob4TJcxqmdOTdcEB7o7lLTEJroH7cc'
+            access_token: testConfig.twitter.access_token
+            access_token_secret: testConfig.twitter.access_token_secret
           linkedin:
-            access_token: '82712e42-aa22-4828-9ef6-1a10ad8ca169'
-            access_token_secret: '018aff5d-fcf2-4145-af70-ad955ab83565'
+            access_token: testConfig.linkedin.access_token
+            access_token_secret: testConfig.linkedin.access_token_secret
       done()
 
     it 'should get content successfully as specified in options', (done) ->
@@ -80,9 +81,7 @@ describe 'Client', () ->
           expect(results.details.linkedin).to.be.ok()
           expect(results.details.linkedin.id).to.be.ok()
           expect(results.details.linkedin.name).to.be.ok()
-          expect(results.details.linkedin.picture).to.be.ok()
           expect(results.contacts.linkedin).to.be.ok()
-          expect(results.contacts.linkedin[1].name).to.be.ok()
-          expect(results.contacts.linkedin[1].id).to.be.ok()
-          expect(results.contacts.linkedin[1].picture).to.be.ok()
+          expect(results.contacts.linkedin[0].name).to.be.ok()
+          expect(results.contacts.linkedin[0].id).to.be.ok()
           done()
