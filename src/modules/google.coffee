@@ -10,7 +10,7 @@ googleClient = (keys) ->
 	@requestFunctions =
 		contacts: (tokens, cb) ->
 			oauth.get 'https://www.google.com/m8/feeds/contacts/default/full?alt=json&max-results=10000', tokens.access_token, tokens.access_token_secret, (err, data, res) ->
-				return cb new Error(err.data ? err) if err
+				return cb null, {error: new Error(err.data ? err)} if err
 				getPrimaryEmail = (contact, cb) ->
 					emails = contact.entry['gd$email']
 					return cb(null, contact) if not emails?
@@ -28,7 +28,7 @@ googleClient = (keys) ->
 				, cb
 		details: (tokens, cb) ->
 			oauth.get 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json', tokens.access_token, tokens.access_token_secret, (err, data, res) ->
-				return cb new Error(err.data ? err) if err
+				return cb null, {error: new Error(err.data ? err)} if err
 				cb(null, JSON.parse(data))
 	return
 

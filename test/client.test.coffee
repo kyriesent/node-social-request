@@ -31,6 +31,7 @@ describe 'Client', () ->
       done()
 
     it 'should get content successfully as specified in options', (done) ->
+      @timeout 5000
       socialReq.get 'abcd', { details: ['*', '-facebook'], contacts: ['google'] },  (err, results) ->
         throw err if err
         expect(results.details.google).to.be.ok()
@@ -40,6 +41,7 @@ describe 'Client', () ->
         done()
     describe 'for google', () ->
       it 'should get content successfully', (done) ->
+        @timeout 5000
         socialReq.get 'abcd', { details: ['google'], contacts: ['google'] },  (err, results) ->
           throw err if err
           expect(results.details.google.id).to.be.ok()
@@ -51,6 +53,7 @@ describe 'Client', () ->
           done()
     describe 'for facebook', () ->
       it 'should get content successfully', (done) ->
+        @timeout 5000
         socialReq.get 'abcd', { details: ['facebook'], contacts: ['facebook'] },  (err, results) ->
           throw err if err
           expect(results.details.facebook).to.be.ok()
@@ -63,7 +66,7 @@ describe 'Client', () ->
           done()
     describe 'for twitter', () ->
       it 'should get content successfully', (done) ->
-        @timeout 5000
+        @timeout 7000
         socialReq.get 'abcd', { details: ['twitter'], contacts: ['twitter'] },  (err, results) ->
           throw err if err
           expect(results.details.twitter).to.be.ok()

@@ -10,7 +10,7 @@ twitterClient = (keys) ->
   @requestFunctions =
     contacts: (tokens, cb) ->
       oauth.get 'https://api.twitter.com/1.1/friends/ids.json', tokens.access_token, tokens.access_token_secret, (err, data) ->
-        return cb new Error(err.data ? err) if err
+        return cb null, {error: new Error(err.data ? err)} if err
         data = JSON.parse(data)
         ids = data.ids[0...100].join ','
         oauth.get "https://api.twitter.com/1.1/users/lookup.json?user_id=#{ids}", tokens.access_token, tokens.access_token_secret, (err, data) ->
@@ -27,7 +27,7 @@ twitterClient = (keys) ->
           , cb
     details: (tokens, cb) ->
       oauth.get 'https://api.twitter.com/1.1/account/verify_credentials.json', tokens.access_token, tokens.access_token_secret, (err, data) ->
-        return cb new Error(err.data ? err) if err
+        return cb null, {error: new Error(err.data ? err)} if err
         data = JSON.parse(data)
         data.username = data.screen_name
         cb(null, data)

@@ -10,7 +10,7 @@ linkedinClient = (keys) ->
   @requestFunctions =
     contacts: (tokens, cb) ->
       oauth.get 'http://api.linkedin.com/v1/people/~/connections?format=json', tokens.access_token, tokens.access_token_secret, (err, data) ->
-        return cb new Error(err.data ? err) if err
+        return cb null, {error: new Error(err.data ? err)} if err
         data = JSON.parse(data)
         async.map data.values, (entry, cb) ->
           contact = 
@@ -22,7 +22,7 @@ linkedinClient = (keys) ->
         , cb
     details: (tokens, cb) ->
       oauth.get 'http://api.linkedin.com/v1/people/~:(id,first-name,last-name,industry,picture-url)?format=json', tokens.access_token, tokens.access_token_secret, (err, data) ->
-        return cb new Error(err.data ? err) if err
+        return cb null, {error: new Error(err.data ? err)} if err
         data = JSON.parse(data)
         data.name = "#{data.firstName} #{data.lastName}"
         data.picture = data.pictureUrl
