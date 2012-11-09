@@ -85,3 +85,26 @@ describe 'Client', () ->
           expect(results.contacts.linkedin[0].name).to.be.ok()
           expect(results.contacts.linkedin[0].id).to.be.ok()
           done()
+    describe 'on failure', () ->
+      beforeEach () ->
+        socialReq.getTokens (id, cb) ->
+          cb
+            facebook:
+              access_token: 'nooooooooooooooooooooooooooooooo'
+            google: 
+              access_token: 'nooooooooooooooooooooooooooooooo'
+              access_token_secret: 'nooooooooooooooooooooooooooooooo'
+            twitter:
+              access_token: 'nooooooooooooooooooooooooooooooo'
+              access_token_secret: 'nooooooooooooooooooooooooooooooo'
+            linkedin:
+              access_token: 'nooooooooooooooooooooooooooooooo'
+              access_token_secret: 'nooooooooooooooooooooooooooooooo'
+      it 'should return keys with errors and not throw errors', (done) ->
+        socialReq.get 'abcd', { details: ['*'] },  (err, results) ->
+          throw err if err
+          expect(results.details.google.error).to.be.ok()
+          expect(results.details.facebook.error).to.be.ok()
+          expect(results.details.twitter.error).to.be.ok()
+          expect(results.details.linkedin.error).to.be.ok()
+          done()

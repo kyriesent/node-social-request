@@ -17,7 +17,7 @@ SocialReq.prototype.get = (id, scopes, done) ->
   self = @
   getServiceRequestFunction = (service, scope, tokens) ->
     return (cb) ->
-      if self.serviceModules[service].requestFunctions[scope] then self.serviceModules[service].requestFunctions[scope](tokens, cb) else cb(null, null)
+      if self.serviceModules[service]?.requestFunctions[scope]? then self.serviceModules[service].requestFunctions[scope](tokens, cb) else cb(null, null)
   self._getTokens id, (tokens) ->
     getFunctions = {}
     pushGetFunction = (scope, services) ->

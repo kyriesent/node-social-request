@@ -1,7 +1,7 @@
 {
     "name": "social-request"
   , "version": "0.0.1"
-  , "private": true
+  , "author": "kyriesent"
   , "dependencies": {
       "request": "2.11.x"
     , "coffee-script": "1.3.x"
