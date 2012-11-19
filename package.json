@@ -1,6 +1,6 @@
 {
   "name": "social-request",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "kyriesent",
   "dependencies": {
     "request": "2.11.x",
