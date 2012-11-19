@@ -1,15 +1,14 @@
 async = require('async')
-OAuth = require('oauth').OAuth
+OAuth2 = require('oauth').OAuth2
 
 googleClient = (keys) ->
 	self = @
-	@consumerKey = keys.consumerKey
-	@consumerSecret = keys.consumerSecret
-	oauth = new OAuth null, null, @consumerKey, @consumerSecret, '2.0', null, 'HMAC-SHA1'
-	oauth._headers['GData-Version'] = '3.0'
+	@clientId = keys.clientId
+	@clientSecret = keys.clientSecret
+	oa = new OAuth2
 	@requestFunctions =
 		contacts: (tokens, cb) ->
-			oauth.get 'https://www.google.com/m8/feeds/contacts/default/full?alt=json&max-results=10000', tokens.access_token, tokens.access_token_secret, (err, data, res) ->
+			oa._request 'get', 'https://www.google.com/m8/feeds/contacts/default/full?alt=json&max-results=10000', {'GData-Version':'3.0'}, '', tokens.access_token, (err, data, res) ->
 				return cb null, {error: new Error(err.data ? err)} if err
 				getPrimaryEmail = (contact, cb) ->
 					emails = contact.entry['gd$email']
@@ -27,7 +26,7 @@ googleClient = (keys) ->
 					getPrimaryEmail(contact, cb);
 				, cb
 		details: (tokens, cb) ->
-			oauth.get 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json', tokens.access_token, tokens.access_token_secret, (err, data, res) ->
+			oa._request 'get', 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {'GData-Version':'3.0'}, '', tokens.access_token, (err, data, res) ->
 				return cb null, {error: new Error(err.data ? err)} if err
 				cb(null, JSON.parse(data))
 	return

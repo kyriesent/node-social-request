@@ -7,7 +7,8 @@ describe 'Client', () ->
   beforeEach (done) ->
     socialReq = new SocialReq()
     socialReq
-      .use('google', {consumerKey: testConfig.google.consumerKey, consumerSecret: testConfig.google.consumerSecret})
+      .use('google', {clientId: testConfig.google.clientId, clientSecret: testConfig.google.clientSecret})
+      .use('googleplus', {clientId: testConfig.google.clientId, clientSecret: testConfig.google.clientSecret})
       .use('facebook', {appId: testConfig.facebook.appId, appSecret: testConfig.facebook.appSecret})
       .use('twitter', {consumerKey: testConfig.twitter.consumerKey, consumerSecret: testConfig.twitter.consumerSecret})
       .use('linkedin', {apiKey: testConfig.linkedin.apiKey, secretKey: testConfig.linkedin.secretKey})
@@ -20,6 +21,9 @@ describe 'Client', () ->
           facebook:
             access_token: testConfig.facebook.access_token
           google: 
+            access_token: testConfig.google.access_token
+            access_token_secret: testConfig.google.access_token_secret
+          googleplus: 
             access_token: testConfig.google.access_token
             access_token_secret: testConfig.google.access_token_secret
           twitter:
@@ -42,14 +46,17 @@ describe 'Client', () ->
     describe 'for google', () ->
       it 'should get content successfully', (done) ->
         @timeout 5000
-        socialReq.get 'abcd', { details: ['google'], contacts: ['google'] },  (err, results) ->
+        socialReq.get 'abcd', { details: ['google', 'googleplus'], contacts: ['google', 'googleplus'] },  (err, results) ->
           throw err if err
           expect(results.details.google.id).to.be.ok()
           expect(results.details.google.email).to.be.ok()
+          expect(results.details.googleplus.organizations).to.be.ok()
+          expect(results.details.googleplus.organizations.length).to.be.greaterThan 0
           expect(results.contacts.google).to.be.ok()
-          expect(results.contacts.google.length).to.be.greaterThan(0)
+          expect(results.contacts.google.length).to.be.greaterThan 0
           expect(results.contacts.google[0].entry.id).to.be.ok()
           expect(results.contacts.google[0].email).to.be.ok()
+          expect(results.contacts.googleplus.error).to.be.ok()
           done()
     describe 'for facebook', () ->
       it 'should get content successfully', (done) ->
