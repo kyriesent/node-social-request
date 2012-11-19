@@ -104,6 +104,9 @@ describe 'Client', () ->
             google: 
               access_token: 'nooooooooooooooooooooooooooooooo'
               access_token_secret: 'nooooooooooooooooooooooooooooooo'
+            googleplus:
+              access_token: 'nooooooooooooooooooooooooooooooo'
+              access_token_secret: 'nooooooooooooooooooooooooooooooo'
             twitter:
               access_token: 'nooooooooooooooooooooooooooooooo'
               access_token_secret: 'nooooooooooooooooooooooooooooooo'
