@@ -22,10 +22,10 @@ describe 'Client', () ->
             access_token: testConfig.facebook.access_token
           google: 
             access_token: testConfig.google.access_token
-            access_token_secret: testConfig.google.access_token_secret
+            refresh_token: testConfig.google.refresh_token
           googleplus: 
             access_token: testConfig.google.access_token
-            access_token_secret: testConfig.google.access_token_secret
+            refresh_token: testConfig.google.refresh_token
           twitter:
             access_token: testConfig.twitter.access_token
             access_token_secret: testConfig.twitter.access_token_secret
@@ -46,7 +46,7 @@ describe 'Client', () ->
     describe 'for google', () ->
       it 'should get content successfully', (done) ->
         @timeout 5000
-        socialReq.get 'abcd', { details: ['google', 'googleplus'], contacts: ['google', 'googleplus'] },  (err, results) ->
+        socialReq.get 'abcd', { details: ['google', 'googleplus'], contacts: ['google', 'googleplus'], tokens: ['google'] },  (err, results) ->
           throw err if err
           expect(results.details.google.id).to.be.ok()
           expect(results.details.google.email).to.be.ok()
@@ -57,6 +57,9 @@ describe 'Client', () ->
           expect(results.contacts.google[0].entry.id).to.be.ok()
           expect(results.contacts.google[0].email).to.be.ok()
           expect(results.contacts.googleplus.error).to.be.ok()
+          expect(results.tokens.google.access_token).to.be.ok()
+          expect(results.tokens.google.expires_in).to.be.ok()
+          expect(results.tokens.google.token_type).to.be.ok()
           done()
     describe 'for facebook', () ->
       it 'should get content successfully', (done) ->

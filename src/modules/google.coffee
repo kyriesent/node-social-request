@@ -1,5 +1,6 @@
 async = require('async')
 OAuth2 = require('oauth').OAuth2
+request = require 'request'
 
 googleClient = (keys) ->
 	self = @
@@ -29,6 +30,15 @@ googleClient = (keys) ->
 			oa._request 'get', 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {'GData-Version':'3.0'}, '', tokens.access_token, (err, data, res) ->
 				return cb null, {error: new Error(err.data ? err)} if err
 				cb(null, JSON.parse(data))
+		tokens: (tokens, cb) ->
+			tokenForm = 
+				refresh_token: tokens.refresh_token
+				client_id: self.clientId
+				client_secret: self.clientSecret
+				grant_type: 'refresh_token'
+			request.post 'https://accounts.google.com/o/oauth2/token', {form: tokenForm}, (err, response, body) ->
+				return cb null, {error: new Error(err.data ? err)} if err
+				cb(null, JSON.parse(body))
 	return
 
 module.exports = googleClient
