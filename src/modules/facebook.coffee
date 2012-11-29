@@ -9,8 +9,9 @@ facebookClient = (keys) ->
   @requestFunctions =
     contacts: (tokens, cb) ->
       request "https://graph.facebook.com/me/friends?access_token=#{tokens.access_token}", (err, data, res) ->
-        return cb null, {error: new Error(err.data ? err)} if err
+        return cb null, {error: new Error(err.data ? err)} if err 
         data = JSON.parse(data.body)
+        return cb null, {error: new Error(data.error.message)} if data.error? 
         async.map data.data, (entry, cb) ->
           contact = 
             id: entry.id

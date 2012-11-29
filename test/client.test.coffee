@@ -116,11 +116,19 @@ describe 'Client', () ->
             linkedin:
               access_token: 'nooooooooooooooooooooooooooooooo'
               access_token_secret: 'nooooooooooooooooooooooooooooooo'
-      it 'should return keys with errors and not throw errors', (done) ->
+      it 'should return keys with errors and not throw errors for details', (done) ->
         socialReq.get 'abcd', { details: ['*'] },  (err, results) ->
           throw err if err
           expect(results.details.google.error).to.be.ok()
           expect(results.details.facebook.error).to.be.ok()
           expect(results.details.twitter.error).to.be.ok()
           expect(results.details.linkedin.error).to.be.ok()
+          done()
+      it 'should do same for contacts', (done) ->
+        socialReq.get 'abcd', { contacts: ['*'] },  (err, results) ->
+          throw err if err
+          expect(results.contacts.google.error).to.be.ok()
+          expect(results.contacts.facebook.error).to.be.ok()
+          expect(results.contacts.twitter.error).to.be.ok()
+          expect(results.contacts.linkedin.error).to.be.ok()
           done()
