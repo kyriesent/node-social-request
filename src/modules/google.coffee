@@ -1,27 +1,44 @@
-Gdata = require('gdata').GDClient
+async = require('async')
+OAuth2 = require('oauth').OAuth2
+request = require 'request'
 
-google = (keys) ->
+googleClient = (keys) ->
 	self = @
-	@consumerKey = keys.consumerKey
-	@consumerSecret = keys.consumerSecret
+	@clientId = keys.clientId
+	@clientSecret = keys.clientSecret
+	oa = new OAuth2
 	@requestFunctions =
 		contacts: (tokens, cb) ->
-			google = new Gdata(self.consumerKey, self.consumerSecret)
-			google.setAccessToken(tokens.access_token, tokens.access_token_secret)
-			google.get 'https://www.google.com/m8/feeds/contacts/default/full/', (err, feed) ->
-				return cb err if err
-				contacts = []
-				for entry in feed.getEntries()
+			oa._request 'get', 'https://www.google.com/m8/feeds/contacts/default/full?alt=json&max-results=10000', {'GData-Version':'3.0'}, '', tokens.access_token, (err, data, res) ->
+				return cb null, {error: new Error(err.data ? err)} if err
+				getPrimaryEmail = (contact, cb) ->
+					emails = contact.entry['gd$email']
+					return cb(null, contact) if not emails?
+					async.detect emails, (email, cb) ->
+						cb(email.primary)
+					, (primaryEmail) ->
+						contact.email = if primaryEmail then primaryEmail.address else null
+						cb(null, contact)
+				data = JSON.parse(data)
+				async.map data.feed.entry, (entry, cb) ->
 					contact = 
 						entry: entry
-						fullname: entry.entry['gd$name']['gd$fullName']?
-						email: entry.entry['gd$name']?['gd$email']?
-					contacts.push contact
-					console.log contact.fullname	
-					console.log contact.email
-				cb(null, 'google contacts')
+						fullname: if entry['gd$name']? and entry['gd$name']['gd$fullName']? then entry['gd$name']['gd$fullName']['$t'] else null
+					getPrimaryEmail(contact, cb);
+				, cb
 		details: (tokens, cb) ->
-			cb(null, 'google details')
+			oa._request 'get', 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {'GData-Version':'3.0'}, '', tokens.access_token, (err, data, res) ->
+				return cb null, {error: new Error(err.data ? err)} if err
+				cb(null, JSON.parse(data))
+		tokens: (tokens, cb) ->
+			tokenForm = 
+				refresh_token: tokens.refresh_token
+				client_id: self.clientId
+				client_secret: self.clientSecret
+				grant_type: 'refresh_token'
+			request.post 'https://accounts.google.com/o/oauth2/token', {form: tokenForm}, (err, response, body) ->
+				return cb null, {error: new Error(err.data ? err)} if err
+				cb(null, JSON.parse(body))
 	return
 
-module.exports = google
+module.exports = googleClient
