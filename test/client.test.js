@@ -67,7 +67,6 @@
           if (err) {
             throw err;
           }
-          console.log(err, results);
           expect(results.details.google).to.be.ok();
           expect(results.details.facebook).not.to.be.ok();
           expect(results.contacts.google).to.be.ok();
@@ -196,10 +195,10 @@
             if (err) {
               throw err;
             }
-            expect(results.details.google.error).to.be.ok();
-            expect(results.details.facebook.error).to.be.ok();
-            expect(results.details.twitter.error).to.be.ok();
-            expect(results.details.linkedin.error).to.be.ok();
+            expect(results.details.google.error.message).to.be.ok();
+            expect(results.details.facebook.error.message).to.be.ok();
+            expect(results.details.google.error.code).to.be.ok();
+            expect(results.details.facebook.error.code).to.be.ok();
             return done();
           });
         });
@@ -210,10 +209,10 @@
             if (err) {
               throw err;
             }
-            expect(results.contacts.google.error).to.be.ok();
-            expect(results.contacts.facebook.error).to.be.ok();
-            expect(results.contacts.twitter.error).to.be.ok();
-            expect(results.contacts.linkedin.error).to.be.ok();
+            expect(results.contacts.google.error.message).to.be.ok();
+            expect(results.contacts.facebook.error.message).to.be.ok();
+            expect(results.contacts.google.error.code).to.be.ok();
+            expect(results.contacts.facebook.error.code).to.be.ok();
             return done();
           });
         });

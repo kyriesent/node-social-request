@@ -10,7 +10,10 @@ googleClient = (keys) ->
 	@requestFunctions =
 		contacts: (tokens, cb) ->
 			oa._request 'get', 'https://www.google.com/m8/feeds/contacts/default/full?alt=json&max-results=10000', {'GData-Version':'3.0'}, '', tokens.access_token, (err, data, res) ->
-				return cb null, {error: new Error(err.data or err)} if err
+				if err?
+					err.code = err.statusCode
+					err.message = err.data
+					return cb null, {error: err}
 				getPrimaryEmail = (contact, cb) ->
 					emails = contact.entry['gd$email']
 					return cb(null, contact) if not emails?
@@ -28,7 +31,7 @@ googleClient = (keys) ->
 				, cb
 		details: (tokens, cb) ->
 			oa._request 'get', 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {'GData-Version':'3.0'}, '', tokens.access_token, (err, data, res) ->
-				return cb null, {error: new Error(err.data or err)} if err
+				return cb null, {error: JSON.parse(err.data).error} if err?
 				cb(null, JSON.parse(data))
 		tokens: (tokens, cb) ->
 			tokenForm = 
@@ -37,7 +40,7 @@ googleClient = (keys) ->
 				client_secret: self.clientSecret
 				grant_type: 'refresh_token'
 			request.post 'https://accounts.google.com/o/oauth2/token', {form: tokenForm}, (err, response, body) ->
-				return cb null, {error: new Error(err.data or err)} if err
+				return cb null, {error: err.data or err} if err?
 				cb(null, JSON.parse(body))
 	return
 
