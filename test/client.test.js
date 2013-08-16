@@ -197,12 +197,12 @@
             }
             expect(results.details.google.error.message).to.be.ok();
             expect(results.details.facebook.error.message).to.be.ok();
-            expect(results.details.google.error.code).to.be.ok();
-            expect(results.details.facebook.error.code).to.be.ok();
+            expect(results.details.google.error.code).to.be(401);
+            expect(results.details.facebook.error.code).to.be(190);
             return done();
           });
         });
-        return it('should do same for contacts', function(done) {
+        it('should do same for contacts', function(done) {
           return socialReq.get('abcd', {
             contacts: ['*']
           }, function(err, results) {
@@ -211,8 +211,20 @@
             }
             expect(results.contacts.google.error.message).to.be.ok();
             expect(results.contacts.facebook.error.message).to.be.ok();
-            expect(results.contacts.google.error.code).to.be.ok();
-            expect(results.contacts.facebook.error.code).to.be.ok();
+            expect(results.contacts.google.error.code).to.be(401);
+            expect(results.contacts.facebook.error.code).to.be(190);
+            return done();
+          });
+        });
+        return it('should do same for token refresh', function(done) {
+          return socialReq.get('abcd', {
+            tokens: ['google']
+          }, function(err, results) {
+            if (err) {
+              throw err;
+            }
+            expect(results.tokens.google.error.message).to.be.ok();
+            expect(results.tokens.google.error.code).to.be(400);
             return done();
           });
         });

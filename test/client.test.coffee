@@ -123,8 +123,8 @@ describe 'Client', () ->
           expect(results.details.facebook.error.message).to.be.ok()
           # expect(results.details.twitter.error.message).to.be.ok()
           # expect(results.details.linkedin.error.message).to.be.ok()
-          expect(results.details.google.error.code).to.be.ok()
-          expect(results.details.facebook.error.code).to.be.ok()
+          expect(results.details.google.error.code).to.be 401
+          expect(results.details.facebook.error.code).to.be 190
           # expect(results.details.twitter.error.code).to.be.ok()
           # expect(results.details.linkedin.error.code).to.be.ok()
           done()
@@ -135,8 +135,14 @@ describe 'Client', () ->
           expect(results.contacts.facebook.error.message).to.be.ok()
           # expect(results.contacts.twitter.error.message).to.be.ok()
           # expect(results.contacts.linkedin.error.message).to.be.ok()
-          expect(results.contacts.google.error.code).to.be.ok()
-          expect(results.contacts.facebook.error.code).to.be.ok()
+          expect(results.contacts.google.error.code).to.be 401
+          expect(results.contacts.facebook.error.code).to.be 190
           # expect(results.contacts.twitter.error.code).to.be.ok()
           # expect(results.contacts.linkedin.error.code).to.be.ok()
+          done()
+      it 'should do same for token refresh', (done) ->
+        socialReq.get 'abcd', { tokens: ['google'] },  (err, results) ->
+          throw err if err
+          expect(results.tokens.google.error.message).to.be.ok()
+          expect(results.tokens.google.error.code).to.be 400
           done()
