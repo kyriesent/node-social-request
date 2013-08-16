@@ -41,13 +41,14 @@ googleClient = (keys) ->
 				grant_type: 'refresh_token'
 			request.post 'https://accounts.google.com/o/oauth2/token', {form: tokenForm}, (err, response, body) ->
 				return cb null, {error: err.data or err} if err?
+				console.log body
 				body = JSON.parse body
 				if body.error?
 					error = 
 						message: body.error
 						code: response.statusCode
 					return cb null, {error: error}
-				cb(null, JSON.parse(body))
+				cb(null, body)
 	return
 
 module.exports = googleClient
