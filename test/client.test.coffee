@@ -120,10 +120,12 @@ describe 'Client', () ->
         socialReq.get 'abcd', { details: ['*'] },  (err, results) ->
           throw err if err
           expect(results.details.google.error.message).to.be.ok()
+          expect(results.details.googleplus.error.message).to.be.ok()
           expect(results.details.facebook.error.message).to.be.ok()
           # expect(results.details.twitter.error.message).to.be.ok()
           # expect(results.details.linkedin.error.message).to.be.ok()
           expect(results.details.google.error.code).to.be 401
+          expect(results.details.googleplus.error.code).to.be 403
           expect(results.details.facebook.error.code).to.be 190
           # expect(results.details.twitter.error.code).to.be.ok()
           # expect(results.details.linkedin.error.code).to.be.ok()
@@ -132,10 +134,12 @@ describe 'Client', () ->
         socialReq.get 'abcd', { contacts: ['*'] },  (err, results) ->
           throw err if err
           expect(results.contacts.google.error.message).to.be.ok()
+          expect(results.contacts.googleplus.error.message).to.be.ok()
           expect(results.contacts.facebook.error.message).to.be.ok()
           # expect(results.contacts.twitter.error.message).to.be.ok()
           # expect(results.contacts.linkedin.error.message).to.be.ok()
           expect(results.contacts.google.error.code).to.be 401
+          expect(results.contacts.googleplus.error.code).to.be 400
           expect(results.contacts.facebook.error.code).to.be 190
           # expect(results.contacts.twitter.error.code).to.be.ok()
           # expect(results.contacts.linkedin.error.code).to.be.ok()
