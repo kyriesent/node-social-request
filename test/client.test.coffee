@@ -1,5 +1,5 @@
 SocialReq = require '../index.js'
-testConfig = require '../testconfig.coffee'
+testConfig = require '../testconfig.js'
 expect = require 'expect.js'
 
 describe 'Client', () ->
@@ -38,6 +38,7 @@ describe 'Client', () ->
       @timeout 5000
       socialReq.get 'abcd', { details: ['*', '-facebook'], contacts: ['google'] },  (err, results) ->
         throw err if err
+        console.log err, results
         expect(results.details.google).to.be.ok()
         expect(results.details.facebook).not.to.be.ok()
         expect(results.contacts.google).to.be.ok()
