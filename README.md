@@ -7,4 +7,4 @@ License
 ===================
 MIT
 
-Copyright (c) David Jsa 2012-2014
+Copyright (c) David Jsa 2012-2014 <david.d.jsa@gmail.com>
